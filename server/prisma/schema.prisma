@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  contactNo String   @unique
+  email     String?
+  gender    String? // Male, Female, Other
+  visits    Visit[]
+  createdAt DateTime @default(now())
+}
+
+model Staff {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String   // Stylist, Receptionist, Manager
+  active    Boolean  @default(true)
+  visits    Visit[]  // Primary stylist for a visit
+  visitItems VisitItem[] // Services performed
+}
+
+model Service {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  String
+  price     Float
+  duration  Int?     // Minutes
+  visitItems VisitItem[]
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  String
+  price     Float
+  stock     Int
+  visitItems VisitItem[]
+}
+
+model Visit {
+  id          Int       @id @default(autoincrement())
+  date        DateTime  @default(now())
+  status      String    // CHECKED_IN, IN_SERVICE, WAITING_PAYMENT, COMPLETED, CANCELLED
+  
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  customerId  Int
+  
+  staff       Staff?    @relation(fields: [staffId], references: [id]) // Primary staff
+  staffId     Int?
+  
+  notes       String?
+  items       VisitItem[]
+  invoice     Invoice?
+  feedback    Feedback?
+}
+
+model VisitItem {
+  id          Int      @id @default(autoincrement())
+  visit       Visit    @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId     Int
+  
+  type        String   // SERVICE, PRODUCT
+  
+  service     Service? @relation(fields: [serviceId], references: [id])
+  serviceId   Int?
+  
+  product     Product? @relation(fields: [productId], references: [id])
+  productId   Int?
+  
+  staff       Staff?   @relation(fields: [staffId], references: [id]) // Performed by
+  staffId     Int?
+  
+  price       Float    // Price at time of addition
+  quantity    Int      @default(1)
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  visit       Visit    @relation(fields: [visitId], references: [id])
+  visitId     Int      @unique
+  
+  subtotal    Float
+  discount    Float    // Amount
+  tax         Float
+  total       Float
+  
+  status      String   // PENDING, PAID
+  payments    Payment[]
+  createdAt   DateTime @default(now())
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId Int
+  amount    Float
+  mode      String   // CASH, CARD, UPI
+  date      DateTime @default(now())
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  visit     Visit    @relation(fields: [visitId], references: [id])
+  visitId   Int      @unique
+  rating    Int
+  comment   String?
+  date      DateTime @default(now())
+}
