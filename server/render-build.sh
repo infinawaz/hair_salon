@@ -17,9 +17,8 @@ cd ../server
 echo "Installing server dependencies..."
 npm ci
 
-echo "Fixing permissions..."
-chmod +x node_modules/.bin/prisma
-chmod +x node_modules/.bin/prisma-fmt
+echo "Debug: Listing .bin directory..."
+ls -la node_modules/.bin
 
 echo "Generating Prisma client..."
 npm run prisma:generate
