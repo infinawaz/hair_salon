@@ -66,7 +66,7 @@ const Customers = () => {
             <body>
                 <div class="header">
                     <div class="title">SALON CITY</div>
-                    <div>Delhi • 9999999999</div>
+                    <div>Delhi • +91 81301 03727</div>
                 </div>
                 <div class="info">
                     <div><strong>Date:</strong> ${new Date(visit.date).toLocaleString()}</div>
@@ -207,7 +207,7 @@ const Customers = () => {
                             <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--primary)' }}>Visit History</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {selectedCustomer.visits.map(visit => (
-                                    <div key={visit.id} style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius)', border: '1px solid var(--glass-border)' }}>
+                                    <div key={visit.id} style={{ padding: '1rem', background: 'var(--secondary)', borderRadius: 'var(--radius)', border: '1px solid var(--glass-border)' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                             <span style={{ fontWeight: '500' }}>{new Date(visit.date).toLocaleString()}</span>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

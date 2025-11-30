@@ -78,9 +78,15 @@ app.get('/api/services/recent', async (req, res) => {
 });
 
 app.post('/api/services', async (req, res) => {
-  const { name, price, category, duration } = req.body;
+  const { name, price, category, duration, gender } = req.body;
   const service = await prisma.service.create({
-    data: { name, price: parseFloat(price), category, duration: parseInt(duration) || 30 },
+    data: {
+      name,
+      price: parseFloat(price),
+      category,
+      duration: parseInt(duration) || 30,
+      gender: gender || 'Unisex'
+    },
   });
   res.json(service);
 });

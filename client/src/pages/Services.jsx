@@ -5,7 +5,7 @@ const Services = () => {
     const [services, setServices] = useState([]);
     const [filteredServices, setFilteredServices] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [newService, setNewService] = useState({ name: '', price: '', category: 'General' });
+    const [newService, setNewService] = useState({ name: '', price: '', category: 'General', gender: 'Unisex' });
     const [loading, setLoading] = useState(true);
 
     const [recentServices, setRecentServices] = useState({ added: [], deleted: [] });
@@ -60,7 +60,7 @@ const Services = () => {
             const addedService = await response.json();
             const updatedServices = [...services, addedService];
             setServices(updatedServices);
-            setNewService({ name: '', price: '', category: 'General' });
+            setNewService({ name: '', price: '', category: 'General', gender: 'Unisex' });
             fetchServices(); // Refresh recent list
         } catch (error) {
             console.error('Error adding service:', error);
@@ -120,6 +120,7 @@ const Services = () => {
                             <thead>
                                 <tr>
                                     <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Name</th>
+                                    <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Gender</th>
                                     <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Category</th>
                                     <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem', textAlign: 'right' }}>Price</th>
                                     <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem', width: '50px' }}></th>
@@ -129,6 +130,18 @@ const Services = () => {
                                 {filteredServices.map(service => (
                                     <tr key={service.id}>
                                         <td style={{ fontWeight: '500' }}>{service.name}</td>
+                                        <td>
+                                            <span style={{
+                                                padding: '0.25rem 0.75rem',
+                                                borderRadius: '999px',
+                                                fontSize: '0.75rem',
+                                                backgroundColor: service.gender === 'Male' ? 'rgba(59, 130, 246, 0.1)' : service.gender === 'Female' ? 'rgba(236, 72, 153, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                                                color: service.gender === 'Male' ? '#3b82f6' : service.gender === 'Female' ? '#ec4899' : '#9ca3af',
+                                                border: '1px solid var(--glass-border)'
+                                            }}>
+                                                {service.gender}
+                                            </span>
+                                        </td>
                                         <td>
                                             <span style={{
                                                 padding: '0.25rem 0.75rem',
@@ -196,6 +209,18 @@ const Services = () => {
                                         <option value="Waxing">Waxing</option>
                                         <option value="Manicure/Pedicure">Manicure/Pedicure</option>
                                         <option value="Makeup">Makeup</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--muted-foreground)' }}>Gender</label>
+                                    <select
+                                        className="input"
+                                        value={newService.gender}
+                                        onChange={(e) => setNewService({ ...newService, gender: e.target.value })}
+                                    >
+                                        <option value="Unisex">Unisex</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
                                 </div>
                                 <div>

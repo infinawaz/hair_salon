@@ -117,7 +117,7 @@ const Dashboard = () => {
                 <div class="header">
                     <h2>SALON CITY</h2>
                     <p>Delhi, India</p>
-                    <p>Ph: 9999999999</p>
+                    <p>Ph: +91 81301 03727</p>
                     <p>Date: ${new Date(visit.date).toLocaleString()}</p>
                     <p>Visit #${visit.id}</p>
                 </div>
@@ -169,7 +169,7 @@ const Dashboard = () => {
 
         const days = [];
         for (let i = 0; i < firstDayOfMonth; i++) {
-            days.push(<div key={`empty-${i}`} />);
+            days.push(<div key={`empty - ${i} `} />);
         }
         for (let i = 1; i <= daysInMonth; i++) {
             const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i);
@@ -264,8 +264,8 @@ const Dashboard = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
                 {/* Stats Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignContent: 'start' }}>
-                    <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)}`} icon={DollarSign} />
-                    <StatCard title="Monthly Revenue" value={`₹${stats.monthlySales.toFixed(2)}`} icon={ShoppingBag} />
+                    <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)} `} icon={DollarSign} />
+                    <StatCard title="Monthly Revenue" value={`₹${stats.monthlySales.toFixed(2)} `} icon={ShoppingBag} />
                     <StatCard title="Daily Orders" value={stats.dailyOrders} icon={Users} />
                     <StatCard title="Monthly Orders" value={stats.monthlyOrders} icon={CalendarIcon} />
                 </div>
@@ -316,7 +316,7 @@ const Dashboard = () => {
                                     dataKey="value"
                                 >
                                     {stats.topProducts.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell key={`cell - ${index} `} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
                                 <Tooltip
@@ -349,7 +349,7 @@ const Dashboard = () => {
                         <tbody>
                             {stats.recentBills.length > 0 ? (
                                 stats.recentBills.map(bill => (
-                                    <tr key={bill.id} onClick={() => handleBillClick(bill.visitId)} style={{ cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                                    <tr key={bill.id} onClick={() => handleBillClick(bill.visitId)} style={{ cursor: 'pointer', transition: 'background 0.2s' }} className="hover:bg-secondary">
                                         <td style={{ fontFamily: 'monospace', color: 'var(--primary)' }}>#{bill.id}</td>
                                         <td>
                                             <div style={{ fontWeight: '500' }}>{bill.customerName || 'Walk-in'}</div>
@@ -394,7 +394,7 @@ const Dashboard = () => {
                             </button>
                         </div>
                         <div className="card-content" style={{ overflowY: 'auto' }}>
-                            <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius)' }}>
+                            <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'var(--secondary)', borderRadius: 'var(--radius)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                     <span style={{ color: 'var(--muted-foreground)' }}>Customer</span>
                                     <span style={{ fontWeight: '600' }}>{selectedBill.customer.name}</span>

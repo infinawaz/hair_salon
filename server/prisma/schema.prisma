@@ -38,6 +38,7 @@ model Service {
   category  String
   price     Float
   duration  Int?     // Minutes
+  gender    String   @default("Unisex") // Male, Female, Unisex
   visitItems VisitItem[]
   createdAt DateTime @default(now())
   deletedAt DateTime?
