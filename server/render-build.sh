@@ -15,7 +15,7 @@ echo "Moving back to server..."
 cd ../server
 
 echo "Installing server dependencies..."
-npm ci
+npm install
 
 echo "Debug: Listing .bin directory..."
 ls -la node_modules/.bin
