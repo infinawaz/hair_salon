@@ -261,7 +261,7 @@ const Dashboard = () => {
                 boxShadow: '0 10px 30px rgba(212, 175, 55, 0.2)'
             }}>
                 <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back, Sanjeev!</h1>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back!</h1>
                     <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>Here's what's happening in your salon today.</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
