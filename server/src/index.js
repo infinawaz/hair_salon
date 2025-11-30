@@ -199,6 +199,16 @@ app.get('/api/visits/:id', async (req, res) => {
   res.json(visit);
 });
 
+// 3.5 Update Visit Status (Manual)
+app.patch('/api/visits/:id/status', async (req, res) => {
+  const { status } = req.body;
+  const visit = await prisma.visit.update({
+    where: { id: parseInt(req.params.id) },
+    data: { status }
+  });
+  res.json(visit);
+});
+
 // 4. Update Visit Items (Add Service/Product)
 app.post('/api/visits/:id/items', async (req, res) => {
   const { type, itemId, staffId, price, quantity } = req.body;

@@ -24,6 +24,19 @@ const Reception = () => {
         }
     };
 
+    const updateStatus = async (id, status) => {
+        try {
+            await fetch(`/api/visits/${id}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            fetchVisits();
+        } catch (error) {
+            console.error('Error updating status:', error);
+        }
+    };
+
     const columns = [
         { id: 'CHECKED_IN', title: 'Waiting', icon: Clock, color: '#f59e0b' },
         { id: 'IN_SERVICE', title: 'In Service', icon: Scissors, color: '#3b82f6' },
@@ -50,7 +63,7 @@ const Reception = () => {
                 </div>
 
                 {visit.items && visit.items.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.5rem' }}>
                         {visit.items.slice(0, 2).map((item, i) => (
                             <span key={i} style={{
                                 fontSize: '0.7rem',
@@ -65,6 +78,45 @@ const Reception = () => {
                         {visit.items.length > 2 && <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)' }}>+{visit.items.length - 2} more</span>}
                     </div>
                 )}
+
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                    {visit.status === 'CHECKED_IN' && (
+                        <button
+                            className="btn btn-primary"
+                            style={{ width: '100%', fontSize: '0.75rem', padding: '0.4rem' }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                updateStatus(visit.id, 'IN_SERVICE');
+                            }}
+                        >
+                            Start Service
+                        </button>
+                    )}
+                    {visit.status === 'IN_SERVICE' && (
+                        <button
+                            className="btn btn-secondary"
+                            style={{ width: '100%', fontSize: '0.75rem', padding: '0.4rem' }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/visits/${visit.id}`);
+                            }}
+                        >
+                            Checkout
+                        </button>
+                    )}
+                    {visit.status === 'WAITING_PAYMENT' && (
+                        <button
+                            className="btn btn-primary"
+                            style={{ width: '100%', fontSize: '0.75rem', padding: '0.4rem', backgroundColor: '#10b981', borderColor: '#10b981' }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/visits/${visit.id}`);
+                            }}
+                        >
+                            Collect Payment
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
