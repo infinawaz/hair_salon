@@ -15,9 +15,13 @@ echo "Moving back to server..."
 cd ../server
 
 echo "Installing server dependencies..."
-npm install
+npm ci
+
+echo "Fixing permissions..."
+chmod +x node_modules/.bin/prisma
+chmod +x node_modules/.bin/prisma-fmt
 
 echo "Generating Prisma client..."
-npx prisma generate
+npm run prisma:generate
 
 echo "Build done!"
