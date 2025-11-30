@@ -5,7 +5,7 @@ import PaymentModal from '../components/PaymentModal';
 import FeedbackModal from '../components/FeedbackModal';
 
 const VisitDetail = () => {
-    const { id } = useParams();
+    const { id } = useParams(); // Trigger HMR update
     const navigate = useNavigate();
     const [visit, setVisit] = useState(null);
     const [services, setServices] = useState([]);

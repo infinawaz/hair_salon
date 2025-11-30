@@ -1,40 +1,41 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
 });
 
 const sendBillEmail = async (customerEmail, visit, invoice) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.warn('Email credentials not found. Skipping email send.');
-        return false;
-    }
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('Email credentials not found. Skipping email send.');
+    return false;
+  }
 
-    if (!customerEmail) {
-        console.warn('No customer email provided.');
-        return false;
-    }
+  if (!customerEmail) {
+    console.warn('No customer email provided.');
+    return false;
+  }
 
-    const itemsHtml = visit.items.map(item => `
+  const itemsHtml = visit.items.map(item => `
     <tr>
       <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.service?.name || item.product?.name}</td>
       <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">₹${item.price.toFixed(2)}</td>
     </tr>
   `).join('');
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: customerEmail,
-        subject: `Your Receipt from Salon City - Visit #${visit.id}`,
-        html: `
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: customerEmail,
+    subject: `Your Receipt from Salon City - Visit #${visit.id}`,
+    html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 20px;">
           <h2 style="color: #d4af37; margin: 0;">SALON CITY</h2>
-          <p style="color: #666; margin: 5px 0;">Delhi • +91 81301 03727</p>
+          <p style="color: #666; margin: 5px 0;">J-138, Main Market, Rajori Garden, New Delhi-110027</p>
+          <p style="color: #666; margin: 5px 0;">Contact: 9667722611</p>
         </div>
         
         <p>Hi ${visit.customer.name},</p>
@@ -69,16 +70,16 @@ const sendBillEmail = async (customerEmail, visit, invoice) => {
         </div>
       </div>
     `
-    };
+  };
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log(`Email sent to ${customerEmail}`);
-        return true;
-    } catch (error) {
-        console.error('Error sending email:', error);
-        return false;
-    }
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Email sent to ${customerEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
+  }
 };
 
 module.exports = { sendBillEmail };

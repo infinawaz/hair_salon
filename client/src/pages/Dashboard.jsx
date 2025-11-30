@@ -116,8 +116,8 @@ const Dashboard = () => {
             <body>
                 <div class="header">
                     <h2>SALON CITY</h2>
-                    <p>Delhi, India</p>
-                    <p>Ph: +91 81301 03727</p>
+                    <p>J-138, Main Market, Rajori Garden, New Delhi-110027</p>
+                    <p>Contact: 9667722611</p>
                     <p>Date: ${new Date(visit.date).toLocaleString()}</p>
                     <p>Visit #${visit.id}</p>
                 </div>
