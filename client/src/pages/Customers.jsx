@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Phone, Calendar, DollarSign, Search, Printer } from 'lucide-react';
+import { User, Phone, Calendar, DollarSign, Search, Printer, Trash } from 'lucide-react';
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
@@ -32,6 +32,24 @@ const Customers = () => {
             setFilteredCustomers(data);
         } catch (error) {
             console.error('Error fetching customers:', error);
+        }
+    };
+
+    const handleDeleteCustomer = async (e, customerId) => {
+        e.stopPropagation(); // Prevent row click
+        if (window.confirm('Are you sure you want to delete this customer? This action cannot be undone.')) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/customers/${customerId}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    setCustomers(customers.filter(c => c.id !== customerId));
+                    setFilteredCustomers(filteredCustomers.filter(c => c.id !== customerId));
+                    if (selectedCustomer?.id === customerId) setSelectedCustomer(null);
+                }
+            } catch (error) {
+                console.error('Error deleting customer:', error);
+            }
         }
     };
 
@@ -130,6 +148,7 @@ const Customers = () => {
                                 <th>Visits</th>
                                 <th style={{ textAlign: 'right' }}>Total Spent</th>
                                 <th>Last Visit</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -173,6 +192,25 @@ const Customers = () => {
                                         {customer.visits.length > 0
                                             ? new Date(customer.visits[0].date).toLocaleDateString()
                                             : 'N/A'}
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={(e) => handleDeleteCustomer(e, customer.id)}
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                color: 'var(--muted-foreground)',
+                                                cursor: 'pointer',
+                                                padding: '0.5rem',
+                                                borderRadius: '4px',
+                                                transition: 'all 0.2s'
+                                            }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'none'; }}
+                                            title="Delete Customer"
+                                        >
+                                            <Trash size={16} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

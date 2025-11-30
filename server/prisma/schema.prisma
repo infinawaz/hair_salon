@@ -21,6 +21,7 @@ model Customer {
   gender    String? // Male, Female, Other
   visits    Visit[]
   createdAt DateTime @default(now())
+  deletedAt DateTime?
 }
 
 model Staff {

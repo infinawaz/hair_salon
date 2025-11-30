@@ -111,8 +111,8 @@ app.patch('/api/services/:id/restore', async (req, res) => {
 app.get('/api/customers/search', async (req, res) => {
   const { phone } = req.query;
   if (!phone) return res.json([]);
-  const customer = await prisma.customer.findUnique({
-    where: { contactNo: phone },
+  const customer = await prisma.customer.findFirst({
+    where: { contactNo: phone, deletedAt: null },
     include: { visits: { include: { invoice: true } } }
   });
   res.json(customer);
@@ -130,6 +130,7 @@ app.post('/api/customers', async (req, res) => {
 
 app.get('/api/customers', async (req, res) => {
   const customers = await prisma.customer.findMany({
+    where: { deletedAt: null },
     include: {
       visits: {
         include: {
@@ -141,6 +142,14 @@ app.get('/api/customers', async (req, res) => {
     orderBy: { createdAt: 'desc' }
   });
   res.json(customers);
+});
+
+app.delete('/api/customers/:id', async (req, res) => {
+  await prisma.customer.update({
+    where: { id: parseInt(req.params.id) },
+    data: { deletedAt: new Date() }
+  });
+  res.json({ success: true });
 });
 
 // --- VISIT WORKFLOW ---
