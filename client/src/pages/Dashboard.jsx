@@ -282,7 +282,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            <div className="grid-responsive" style={{ marginBottom: '2.5rem' }}>
                 {/* Stats Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignContent: 'start' }}>
                     <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)} `} icon={DollarSign} />
@@ -296,7 +296,7 @@ const Dashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            <div className="grid-responsive" style={{ marginBottom: '2.5rem' }}>
                 {/* Monthly Revenue Trend */}
                 <div className="card">
                     <div className="card-header">

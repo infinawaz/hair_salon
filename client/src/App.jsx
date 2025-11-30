@@ -9,7 +9,7 @@ import Billing from './pages/Billing';
 import VisitDetail from './pages/VisitDetail';
 import Staff from './pages/Staff';
 import Products from './pages/Products';
-import { LayoutDashboard, Scissors, Receipt, LogOut, Users, ClipboardList, BarChart3, Package, UserCog, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Scissors, Receipt, LogOut, Users, ClipboardList, BarChart3, Package, UserCog, Sun, Moon, Menu, X } from 'lucide-react';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -36,9 +36,41 @@ const DashboardLayout = ({ theme, toggleTheme }) => {
     // { path: '/billing', icon: Receipt, label: 'Billing' }, // Deprecated in favor of Visit flow
   ];
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Close sidebar on route change
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="layout">
-      <aside className="sidebar">
+      {/* Mobile Header / Hamburger */}
+      <div style={{
+        display: 'none', // Hidden on desktop
+        position: 'fixed',
+        top: '1rem',
+        right: '1rem',
+        zIndex: 60,
+      }} className="mobile-menu-btn">
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="btn btn-secondary"
+          style={{ padding: '0.5rem', background: 'var(--glass-bg)', backdropFilter: 'blur(10px)' }}
+        >
+          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-title">Salon City</div>
         <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
           <p style={{ margin: 0 }}>J-138, Main Market, Rajori Garden</p>
