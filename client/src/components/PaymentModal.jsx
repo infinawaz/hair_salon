@@ -16,6 +16,10 @@ const PaymentModal = ({ invoice, onClose, onPaymentComplete }) => {
             });
 
             if (res.ok) {
+                const data = await res.json();
+                if (data.isPaid) {
+                    alert('Payment Completed! Visit marked as done.');
+                }
                 onPaymentComplete();
                 onClose();
             }

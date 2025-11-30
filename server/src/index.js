@@ -289,6 +289,7 @@ app.post('/api/invoices/:id/pay', async (req, res) => {
 
   console.log(`Payment Debug: Invoice ${invoiceId}, Total: ${invoice.total}, Paid: ${totalPaid}`);
 
+  let isPaid = false;
   if (totalPaid >= invoice.total - 1) { // Tolerance for float
     console.log('Payment Debug: Marking as PAID and COMPLETED');
     await prisma.invoice.update({
@@ -299,14 +300,15 @@ app.post('/api/invoices/:id/pay', async (req, res) => {
       where: { id: invoice.visitId },
       data: { status: 'COMPLETED' }
     });
+    isPaid = true;
   } else {
     console.log('Payment Debug: Payment incomplete');
   }
 
-  res.json(payment);
+  res.json({ ...payment, isPaid });
 
   // Send Email Receipt if fully paid
-  if (totalPaid >= invoice.total - 1) {
+  if (isPaid) {
     if (invoice.visit.customer.email) {
       sendBillEmail(invoice.visit.customer.email, invoice.visit, invoice);
     }
