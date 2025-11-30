@@ -14,6 +14,9 @@ npm run build
 echo "Moving back to server..."
 cd ../server
 
+echo "Installing server dependencies..."
+npm install
+
 echo "Generating Prisma client..."
 npx prisma generate
 
