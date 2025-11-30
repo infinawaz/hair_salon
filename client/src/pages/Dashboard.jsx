@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, Users, ShoppingBag, TrendingUp, Printer, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DollarSign, Users, ShoppingBag, TrendingUp, Printer, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const Dashboard = () => {
@@ -158,303 +158,330 @@ const Dashboard = () => {
             </html>
         `);
         receiptWindow.document.close();
-    };
-
-    // Calendar Component
-    const Calendar = () => {
-        const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate));
-
-        const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-        const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
-
-        const days = [];
-        for (let i = 0; i < firstDayOfMonth; i++) {
-            days.push(<div key={`empty - ${i} `} />);
-        }
-        for (let i = 1; i <= daysInMonth; i++) {
-            const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i);
-            const isSelected = date.toDateString() === selectedDate.toDateString();
-            const isToday = date.toDateString() === new Date().toDateString();
-
-            days.push(
-                <div
-                    key={i}
-                    onClick={() => setSelectedDate(date)}
-                    style={{
-                        height: '36px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        background: isSelected ? 'var(--primary)' : isToday ? 'rgba(212, 175, 55, 0.2)' : 'transparent',
-                        color: isSelected ? 'black' : 'var(--foreground)',
-                        fontWeight: isSelected || isToday ? 'bold' : 'normal',
-                        border: isToday && !isSelected ? '1px solid var(--primary)' : 'none'
-                    }}
-                >
-                    {i}
-                </div>
-            );
-        }
-
-        const nextMonth = () => {
-            setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+        const handleEmailReceipt = async (visit) => {
+            if (!visit.customer.email) {
+                alert('Customer does not have an email address linked.');
+                return;
+            }
+            try {
+                const res = await fetch(`http://localhost:3000/api/invoices/${visit.invoice.id}/send-email`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Email sent successfully!');
+                } else {
+                    alert('Failed to send email. Check server logs.');
+                }
+            } catch (error) {
+                console.error('Error sending email:', error);
+                alert('Error sending email.');
+            }
         };
 
-        const prevMonth = () => {
-            setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+        // Calendar Component
+        const Calendar = () => {
+            const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate));
+
+            const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+            const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+
+            const days = [];
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                days.push(<div key={`empty - ${i} `} />);
+            }
+            for (let i = 1; i <= daysInMonth; i++) {
+                const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i);
+                const isSelected = date.toDateString() === selectedDate.toDateString();
+                const isToday = date.toDateString() === new Date().toDateString();
+
+                days.push(
+                    <div
+                        key={i}
+                        onClick={() => setSelectedDate(date)}
+                        style={{
+                            height: '36px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '0.5rem',
+                            cursor: 'pointer',
+                            background: isSelected ? 'var(--primary)' : isToday ? 'rgba(212, 175, 55, 0.2)' : 'transparent',
+                            color: isSelected ? 'black' : 'var(--foreground)',
+                            fontWeight: isSelected || isToday ? 'bold' : 'normal',
+                            border: isToday && !isSelected ? '1px solid var(--primary)' : 'none'
+                        }}
+                    >
+                        {i}
+                    </div>
+                );
+            }
+
+            const nextMonth = () => {
+                setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+            };
+
+            const prevMonth = () => {
+                setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+            };
+
+            return (
+                <div className="card" style={{ height: 'fit-content' }}>
+                    <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem' }}>
+                        <button onClick={prevMonth} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}><ChevronLeft size={20} /></button>
+                        <span style={{ fontWeight: '600' }}>{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+                        <button onClick={nextMonth} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}><ChevronRight size={20} /></button>
+                    </div>
+                    <div className="card-content">
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--muted-foreground)', marginBottom: '0.5rem' }}>
+                            <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem' }}>
+                            {days}
+                        </div>
+                    </div>
+                </div>
+            );
         };
 
         return (
-            <div className="card" style={{ height: 'fit-content' }}>
-                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem' }}>
-                    <button onClick={prevMonth} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}><ChevronLeft size={20} /></button>
-                    <span style={{ fontWeight: '600' }}>{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
-                    <button onClick={nextMonth} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}><ChevronRight size={20} /></button>
-                </div>
-                <div className="card-content">
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--muted-foreground)', marginBottom: '0.5rem' }}>
-                        <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+            <div>
+                {/* Welcome Header */}
+                <div style={{
+                    marginBottom: '2.5rem',
+                    padding: '2rem',
+                    borderRadius: 'var(--radius)',
+                    background: 'linear-gradient(135deg, #d4af37 0%, #b45309 100%)',
+                    color: 'white',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    boxShadow: '0 10px 30px rgba(212, 175, 55, 0.2)'
+                }}>
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back, Sanjeev!</h1>
+                        <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>Here's what's happening in your salon today.</p>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem' }}>
-                        {days}
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '3rem', fontWeight: '700', lineHeight: 1 }}>{selectedDate.getDate()}</div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            {selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}
+                        </div>
+                        <div style={{ fontSize: '1rem', opacity: 0.8 }}>
+                            {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                        </div>
                     </div>
                 </div>
+
+                <div className="page-header" style={{ marginBottom: '1.5rem' }}>
+                    <h2 className="card-title">Dashboard Section</h2>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button className="btn btn-secondary" onClick={handleDownloadReport}>Download Report</button>
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                    {/* Stats Cards */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignContent: 'start' }}>
+                        <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)} `} icon={DollarSign} />
+                        <StatCard title="Monthly Revenue" value={`₹${stats.monthlySales.toFixed(2)} `} icon={ShoppingBag} />
+                        <StatCard title="Daily Orders" value={stats.dailyOrders} icon={Users} />
+                        <StatCard title="Monthly Orders" value={stats.monthlyOrders} icon={CalendarIcon} />
+                    </div>
+
+                    {/* Calendar */}
+                    <Calendar />
+                </div>
+
+                {/* Charts Section */}
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                    {/* Monthly Revenue Trend */}
+                    <div className="card">
+                        <div className="card-header">
+                            <h2 className="card-title">Monthly Revenue Trend</h2>
+                        </div>
+                        <div className="card-content" style={{ height: '300px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={stats.monthlyTrend}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" vertical={false} />
+                                    <XAxis dataKey="name" stroke="var(--muted-foreground)" tick={{ fill: 'var(--muted-foreground)' }} />
+                                    <YAxis stroke="var(--muted-foreground)" tick={{ fill: 'var(--muted-foreground)' }} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--glass-border)', color: 'var(--foreground)' }}
+                                        itemStyle={{ color: 'var(--primary)' }}
+                                        cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                                    />
+                                    <Bar dataKey="revenue" fill="var(--primary)" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Top 5 Products */}
+                    <div className="card">
+                        <div className="card-header">
+                            <h2 className="card-title">Top 5 Products</h2>
+                        </div>
+                        <div className="card-content" style={{ height: '300px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={stats.topProducts}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                    >
+                                        {stats.topProducts.map((entry, index) => (
+                                            <Cell key={`cell - ${index} `} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--glass-border)', color: 'var(--foreground)' }}
+                                        itemStyle={{ color: 'var(--foreground)' }}
+                                    />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Recent Transactions */}
+                <div className="card">
+                    <div className="card-header">
+                        <h2 className="card-title">Transactions ({selectedDate.toLocaleDateString()})</h2>
+                    </div>
+                    <div className="card-content" style={{ maxHeight: '400px', overflowY: 'auto', padding: 0 }}>
+                        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Bill ID</th>
+                                    <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Customer</th>
+                                    <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Date</th>
+                                    <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Amount</th>
+                                    <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {stats.recentBills.length > 0 ? (
+                                    stats.recentBills.map(bill => (
+                                        <tr key={bill.id} onClick={() => handleBillClick(bill.visitId)} style={{ cursor: 'pointer', transition: 'background 0.2s' }} className="hover:bg-secondary">
+                                            <td style={{ fontFamily: 'monospace', color: 'var(--primary)' }}>#{bill.id}</td>
+                                            <td>
+                                                <div style={{ fontWeight: '500' }}>{bill.customerName || 'Walk-in'}</div>
+                                                <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{bill.contactNo}</div>
+                                            </td>
+                                            <td>{new Date(bill.createdAt).toLocaleDateString()}</td>
+                                            <td style={{ fontWeight: '600' }}>₹{bill.total.toFixed(2)}</td>
+                                            <td>
+                                                <span style={{
+                                                    padding: '0.25rem 0.75rem',
+                                                    borderRadius: '999px',
+                                                    fontSize: '0.75rem',
+                                                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                                    color: '#10b981',
+                                                    border: '1px solid rgba(16, 185, 129, 0.2)'
+                                                }}>
+                                                    Completed
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted-foreground)' }}>
+                                            No transactions found for this date.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Bill Details Modal */}
+                {selectedBill && (
+                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                        <div className="card" style={{ width: '500px', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+                            <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h3 className="card-title">Bill Details #{selectedBill.invoice?.id}</h3>
+                                <button onClick={() => setSelectedBill(null)} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}>
+                                    X
+                                </button>
+                            </div>
+                            <div className="card-content" style={{ overflowY: 'auto' }}>
+                                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'var(--secondary)', borderRadius: 'var(--radius)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                        <span style={{ color: 'var(--muted-foreground)' }}>Customer</span>
+                                        <span style={{ fontWeight: '600' }}>{selectedBill.customer.name}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ color: 'var(--muted-foreground)' }}>Date</span>
+                                        <span>{new Date(selectedBill.date).toLocaleString()}</span>
+                                    </div>
+                                </div>
+
+                                <table style={{ width: '100%', marginBottom: '1.5rem' }}>
+                                    <thead>
+                                        <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                                            <th style={{ textAlign: 'left', paddingBottom: '0.5rem' }}>Item</th>
+                                            <th style={{ textAlign: 'right', paddingBottom: '0.5rem' }}>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {selectedBill.items.map(item => (
+                                            <tr key={item.id}>
+                                                <td style={{ padding: '0.5rem 0' }}>{item.service?.name || item.product?.name}</td>
+                                                <td style={{ textAlign: 'right', padding: '0.5rem 0' }}>₹{item.price.toFixed(2)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                                <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '1rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                        <span style={{ color: 'var(--muted-foreground)' }}>Subtotal</span>
+                                        <span>₹{selectedBill.invoice?.subtotal.toFixed(2)}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                        <span style={{ color: 'var(--muted-foreground)' }}>Tax</span>
+                                        <span>₹{selectedBill.invoice?.tax.toFixed(2)}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                        <span style={{ color: 'var(--muted-foreground)' }}>Discount</span>
+                                        <span>-₹{selectedBill.invoice?.discount.toFixed(2)}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: '700', color: 'var(--primary)', marginTop: '1rem' }}>
+                                        <span>Total</span>
+                                        <span>₹{selectedBill.invoice?.total.toFixed(2)}</span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="btn btn-primary"
+                                    style={{ width: '100%', marginTop: '1.5rem' }}
+                                    onClick={() => handleDownloadReceipt(selectedBill)}
+                                >
+                                    <Printer size={18} style={{ marginRight: '0.5rem' }} />
+                                    Download Receipt
+                                </button>
+                                <button
+                                    className="btn btn-secondary"
+                                    style={{ width: '100%', marginTop: '0.5rem' }}
+                                    onClick={() => handleEmailReceipt(selectedBill)}
+                                >
+                                    <Mail size={18} style={{ marginRight: '0.5rem' }} />
+                                    Email Receipt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     };
 
-    return (
-        <div>
-            {/* Welcome Header */}
-            <div style={{
-                marginBottom: '2.5rem',
-                padding: '2rem',
-                borderRadius: 'var(--radius)',
-                background: 'linear-gradient(135deg, #d4af37 0%, #b45309 100%)',
-                color: 'white',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                boxShadow: '0 10px 30px rgba(212, 175, 55, 0.2)'
-            }}>
-                <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back, Sanjeev!</h1>
-                    <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>Here's what's happening in your salon today.</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '3rem', fontWeight: '700', lineHeight: 1 }}>{selectedDate.getDate()}</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        {selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}
-                    </div>
-                    <div style={{ fontSize: '1rem', opacity: 0.8 }}>
-                        {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                    </div>
-                </div>
-            </div>
-
-            <div className="page-header" style={{ marginBottom: '1.5rem' }}>
-                <h2 className="card-title">Dashboard Section</h2>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="btn btn-secondary" onClick={handleDownloadReport}>Download Report</button>
-                </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
-                {/* Stats Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignContent: 'start' }}>
-                    <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)} `} icon={DollarSign} />
-                    <StatCard title="Monthly Revenue" value={`₹${stats.monthlySales.toFixed(2)} `} icon={ShoppingBag} />
-                    <StatCard title="Daily Orders" value={stats.dailyOrders} icon={Users} />
-                    <StatCard title="Monthly Orders" value={stats.monthlyOrders} icon={CalendarIcon} />
-                </div>
-
-                {/* Calendar */}
-                <Calendar />
-            </div>
-
-            {/* Charts Section */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }}>
-                {/* Monthly Revenue Trend */}
-                <div className="card">
-                    <div className="card-header">
-                        <h2 className="card-title">Monthly Revenue Trend</h2>
-                    </div>
-                    <div className="card-content" style={{ height: '300px' }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={stats.monthlyTrend}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" vertical={false} />
-                                <XAxis dataKey="name" stroke="var(--muted-foreground)" tick={{ fill: 'var(--muted-foreground)' }} />
-                                <YAxis stroke="var(--muted-foreground)" tick={{ fill: 'var(--muted-foreground)' }} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--glass-border)', color: 'var(--foreground)' }}
-                                    itemStyle={{ color: 'var(--primary)' }}
-                                    cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                                />
-                                <Bar dataKey="revenue" fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-
-                {/* Top 5 Products */}
-                <div className="card">
-                    <div className="card-header">
-                        <h2 className="card-title">Top 5 Products</h2>
-                    </div>
-                    <div className="card-content" style={{ height: '300px' }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={stats.topProducts}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {stats.topProducts.map((entry, index) => (
-                                        <Cell key={`cell - ${index} `} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--glass-border)', color: 'var(--foreground)' }}
-                                    itemStyle={{ color: 'var(--foreground)' }}
-                                />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-            </div>
-
-            {/* Recent Transactions */}
-            <div className="card">
-                <div className="card-header">
-                    <h2 className="card-title">Transactions ({selectedDate.toLocaleDateString()})</h2>
-                </div>
-                <div className="card-content" style={{ maxHeight: '400px', overflowY: 'auto', padding: 0 }}>
-                    <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
-                        <thead>
-                            <tr>
-                                <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Bill ID</th>
-                                <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Customer</th>
-                                <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Date</th>
-                                <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Amount</th>
-                                <th style={{ position: 'sticky', top: 0, background: 'var(--option-bg)', zIndex: 20, padding: '1rem' }}>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {stats.recentBills.length > 0 ? (
-                                stats.recentBills.map(bill => (
-                                    <tr key={bill.id} onClick={() => handleBillClick(bill.visitId)} style={{ cursor: 'pointer', transition: 'background 0.2s' }} className="hover:bg-secondary">
-                                        <td style={{ fontFamily: 'monospace', color: 'var(--primary)' }}>#{bill.id}</td>
-                                        <td>
-                                            <div style={{ fontWeight: '500' }}>{bill.customerName || 'Walk-in'}</div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>{bill.contactNo}</div>
-                                        </td>
-                                        <td>{new Date(bill.createdAt).toLocaleDateString()}</td>
-                                        <td style={{ fontWeight: '600' }}>₹{bill.total.toFixed(2)}</td>
-                                        <td>
-                                            <span style={{
-                                                padding: '0.25rem 0.75rem',
-                                                borderRadius: '999px',
-                                                fontSize: '0.75rem',
-                                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                                                color: '#10b981',
-                                                border: '1px solid rgba(16, 185, 129, 0.2)'
-                                            }}>
-                                                Completed
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted-foreground)' }}>
-                                        No transactions found for this date.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {/* Bill Details Modal */}
-            {selectedBill && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-                    <div className="card" style={{ width: '500px', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
-                        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3 className="card-title">Bill Details #{selectedBill.invoice?.id}</h3>
-                            <button onClick={() => setSelectedBill(null)} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}>
-                                X
-                            </button>
-                        </div>
-                        <div className="card-content" style={{ overflowY: 'auto' }}>
-                            <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'var(--secondary)', borderRadius: 'var(--radius)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span style={{ color: 'var(--muted-foreground)' }}>Customer</span>
-                                    <span style={{ fontWeight: '600' }}>{selectedBill.customer.name}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <span style={{ color: 'var(--muted-foreground)' }}>Date</span>
-                                    <span>{new Date(selectedBill.date).toLocaleString()}</span>
-                                </div>
-                            </div>
-
-                            <table style={{ width: '100%', marginBottom: '1.5rem' }}>
-                                <thead>
-                                    <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                                        <th style={{ textAlign: 'left', paddingBottom: '0.5rem' }}>Item</th>
-                                        <th style={{ textAlign: 'right', paddingBottom: '0.5rem' }}>Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedBill.items.map(item => (
-                                        <tr key={item.id}>
-                                            <td style={{ padding: '0.5rem 0' }}>{item.service?.name || item.product?.name}</td>
-                                            <td style={{ textAlign: 'right', padding: '0.5rem 0' }}>₹{item.price.toFixed(2)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-
-                            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '1rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span style={{ color: 'var(--muted-foreground)' }}>Subtotal</span>
-                                    <span>₹{selectedBill.invoice?.subtotal.toFixed(2)}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span style={{ color: 'var(--muted-foreground)' }}>Tax</span>
-                                    <span>₹{selectedBill.invoice?.tax.toFixed(2)}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span style={{ color: 'var(--muted-foreground)' }}>Discount</span>
-                                    <span>-₹{selectedBill.invoice?.discount.toFixed(2)}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: '700', color: 'var(--primary)', marginTop: '1rem' }}>
-                                    <span>Total</span>
-                                    <span>₹{selectedBill.invoice?.total.toFixed(2)}</span>
-                                </div>
-                            </div>
-
-                            <button
-                                className="btn btn-primary"
-                                style={{ width: '100%', marginTop: '1.5rem' }}
-                                onClick={() => handleDownloadReceipt(selectedBill)}
-                            >
-                                <Printer size={18} style={{ marginRight: '0.5rem' }} />
-                                Download Receipt
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default Dashboard;
+    export default Dashboard;

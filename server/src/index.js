@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
+const { sendBillEmail } = require('./emailService');
 
 const path = require('path');
 
@@ -298,6 +299,26 @@ app.post('/api/invoices/:id/pay', async (req, res) => {
   }
 
   res.json(payment);
+
+  // Send Email Receipt if fully paid
+  if (totalPaid >= invoice.total - 1) {
+    if (invoice.visit.customer.email) {
+      sendBillEmail(invoice.visit.customer.email, invoice.visit, invoice);
+    }
+  }
+});
+
+app.post('/api/invoices/:id/send-email', async (req, res) => {
+  const invoiceId = parseInt(req.params.id);
+  const invoice = await prisma.invoice.findUnique({
+    where: { id: invoiceId },
+    include: { visit: { include: { customer: true, items: { include: { service: true, product: true } } } } }
+  });
+
+  if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
+
+  const sent = await sendBillEmail(invoice.visit.customer.email, invoice.visit, invoice);
+  res.json({ success: sent });
 });
 
 // 8. Feedback
