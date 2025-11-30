@@ -8,6 +8,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
     const [staffList, setStaffList] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState('');
     const [notes, setNotes] = useState('');
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         fetchStaff();
@@ -20,7 +21,12 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
     };
 
     const handleSearch = async () => {
-        if (phone.length < 10) return;
+        if (phone.length !== 10) {
+            setErrors(prev => ({ ...prev, phone: 'Phone number must be exactly 10 digits' }));
+            return;
+        }
+        setErrors(prev => ({ ...prev, phone: null }));
+
         const res = await fetch(`http://localhost:3000/api/customers/search?phone=${phone}`);
         const data = await res.json();
         if (data) {
@@ -30,10 +36,25 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
         }
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+        if (!phone) newErrors.phone = 'Phone number is required';
+        else if (!/^\d{10}$/.test(phone)) newErrors.phone = 'Phone number must be exactly 10 digits';
+
+        if (!customer && !newCustomer.name.trim()) {
+            newErrors.name = 'Customer name is required';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateForm()) return;
+
         setLoading(true);
 
         try {
@@ -106,6 +127,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
                             />
                             <Search size={18} style={{ position: 'absolute', right: '1rem', top: '0.75rem', color: 'var(--muted-foreground)' }} />
                         </div>
+                        {errors.phone && <span style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{errors.phone}</span>}
                     </div>
 
                     {customer ? (
@@ -139,6 +161,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
                                     value={newCustomer.name}
                                     onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
                                 />
+                                {errors.name && <span style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '-0.5rem' }}>{errors.name}</span>}
                                 <input
                                     type="email"
                                     className="input"
@@ -189,7 +212,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
                         className="btn btn-primary"
                         style={{ width: '100%' }}
                         onClick={handleSubmit}
-                        disabled={!phone || (!customer && !newCustomer.name) || loading}
+                        disabled={loading}
                     >
                         {loading ? 'Processing...' : 'Check In Customer'}
                     </button>
