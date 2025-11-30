@@ -302,7 +302,7 @@ app.post('/api/invoices/:id/pay', async (req, res) => {
   // Check if fully paid
   const invoice = await prisma.invoice.findUnique({
     where: { id: invoiceId },
-    include: { payments: true, visit: true }
+    include: { payments: true, visit: { include: { customer: true } } }
   });
 
   const totalPaid = invoice.payments.reduce((sum, p) => sum + p.amount, 0);
