@@ -26,16 +26,16 @@ const VisitDetail = () => {
     }, [id]);
 
     const fetchVisit = async () => {
-        const res = await fetch(`http://localhost:3000/api/visits/${id}`);
+        const res = await fetch(`/api/visits/${id}`);
         const data = await res.json();
         setVisit(data);
     };
 
     const fetchResources = async () => {
         const [sRes, pRes, stRes] = await Promise.all([
-            fetch('http://localhost:3000/api/services'),
-            fetch('http://localhost:3000/api/products'),
-            fetch('http://localhost:3000/api/staff')
+            fetch('/api/services'),
+            fetch('/api/products'),
+            fetch('/api/staff')
         ]);
         setServices(await sRes.json());
         setProducts(await pRes.json());
@@ -43,7 +43,7 @@ const VisitDetail = () => {
     };
 
     const handleAddItem = async (type, itemId, price) => {
-        await fetch(`http://localhost:3000/api/visits/${id}/items`, {
+        await fetch(`/api/visits/${id}/items`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type, itemId, price })
@@ -55,7 +55,7 @@ const VisitDetail = () => {
 
     const handleRemoveItem = async (itemId) => {
         if (!confirm('Remove this item?')) return;
-        await fetch(`http://localhost:3000/api/visits/items/${itemId}`, { method: 'DELETE' });
+        await fetch(`/api/visits/items/${itemId}`, { method: 'DELETE' });
         fetchVisit();
     };
 
@@ -63,7 +63,7 @@ const VisitDetail = () => {
         const subtotal = visit.items.reduce((sum, i) => sum + i.price, 0);
         const discountAmount = (subtotal * discountPercent) / 100;
 
-        await fetch(`http://localhost:3000/api/visits/${id}/invoice`, {
+        await fetch(`/api/visits/${id}/invoice`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ discount: discountAmount, taxRate: taxPercent })

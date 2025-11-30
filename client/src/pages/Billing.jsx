@@ -25,7 +25,7 @@ const Billing = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/services');
+            const response = await fetch('/api/services');
             const data = await response.json();
             setServices(data);
             const uniqueCategories = ['All', ...new Set(data.map(s => s.category))];
@@ -39,7 +39,7 @@ const Billing = () => {
         setBillDetails(prev => ({ ...prev, contactNo: phone }));
         if (phone.length >= 10) {
             try {
-                const response = await fetch(`http://localhost:3000/api/customers/search?phone=${phone}`);
+                const response = await fetch(`/api/customers/search?phone=${phone}`);
                 const data = await response.json();
                 if (data) {
                     setBillDetails(prev => ({ ...prev, customer: data.name }));
@@ -84,7 +84,7 @@ const Billing = () => {
         const totals = calculateTotals();
 
         try {
-            const response = await fetch('http://localhost:3000/api/bills', {
+            const response = await fetch('/api/bills', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

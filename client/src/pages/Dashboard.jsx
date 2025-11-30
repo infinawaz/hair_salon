@@ -25,7 +25,7 @@ const Dashboard = () => {
             const localDate = new Date(date.getTime() - (offset * 60 * 1000));
             const dateStr = localDate.toISOString().split('T')[0];
 
-            const response = await fetch(`http://localhost:3000/api/stats?date=${dateStr}`);
+            const response = await fetch(`/api/stats?date=${dateStr}`);
             const data = await response.json();
             setStats(data);
         } catch (error) {
@@ -91,7 +91,7 @@ const Dashboard = () => {
 
     const handleBillClick = async (visitId) => {
         try {
-            const res = await fetch(`http://localhost:3000/api/visits/${visitId}`);
+            const res = await fetch(`/api/visits/${visitId}`);
             const data = await res.json();
             setSelectedBill(data);
         } catch (error) {
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 return;
             }
             try {
-                const res = await fetch(`http://localhost:3000/api/invoices/${visit.invoice.id}/send-email`, {
+                const res = await fetch(`/api/invoices/${visit.invoice.id}/send-email`, {
                     method: 'POST'
                 });
                 const data = await res.json();

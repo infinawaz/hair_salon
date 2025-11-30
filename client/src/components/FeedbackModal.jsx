@@ -9,7 +9,7 @@ const FeedbackModal = ({ visitId, onClose, onSubmit }) => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:3000/api/visits/${visitId}/feedback`, {
+            const res = await fetch(`/api/visits/${visitId}/feedback`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ rating, comment })

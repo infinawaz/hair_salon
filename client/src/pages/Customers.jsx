@@ -26,7 +26,7 @@ const Customers = () => {
 
     const fetchCustomers = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/customers');
+            const response = await fetch('/api/customers');
             const data = await response.json();
             setCustomers(data);
             setFilteredCustomers(data);
@@ -39,7 +39,7 @@ const Customers = () => {
         e.stopPropagation(); // Prevent row click
         if (window.confirm('Are you sure you want to delete this customer? This action cannot be undone.')) {
             try {
-                const response = await fetch(`http://localhost:3000/api/customers/${customerId}`, {
+                const response = await fetch(`/api/customers/${customerId}`, {
                     method: 'DELETE'
                 });
                 if (response.ok) {

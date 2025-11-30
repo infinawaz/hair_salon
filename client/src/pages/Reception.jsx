@@ -16,7 +16,7 @@ const Reception = () => {
 
     const fetchVisits = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/visits/active');
+            const res = await fetch('/api/visits/active');
             const data = await res.json();
             setVisits(data);
         } catch (error) {

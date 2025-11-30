@@ -9,7 +9,7 @@ const PaymentModal = ({ invoice, onClose, onPaymentComplete }) => {
     const handlePayment = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:3000/api/invoices/${invoice.id}/pay`, {
+            const res = await fetch(`/api/invoices/${invoice.id}/pay`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: parseFloat(amount), mode })

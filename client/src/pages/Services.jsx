@@ -30,8 +30,8 @@ const Services = () => {
     const fetchServices = async () => {
         try {
             const [servicesRes, recentRes] = await Promise.all([
-                fetch('http://localhost:3000/api/services'),
-                fetch('http://localhost:3000/api/services/recent')
+                fetch('/api/services'),
+                fetch('/api/services/recent')
             ]);
 
             const servicesData = await servicesRes.json();
@@ -52,7 +52,7 @@ const Services = () => {
         if (!newService.name || !newService.price) return;
 
         try {
-            const response = await fetch('http://localhost:3000/api/services', {
+            const response = await fetch('/api/services', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newService),
@@ -71,7 +71,7 @@ const Services = () => {
         if (!window.confirm('Are you sure you want to delete this service?')) return;
 
         try {
-            await fetch(`http://localhost:3000/api/services/${id}`, {
+            await fetch(`/api/services/${id}`, {
                 method: 'DELETE',
             });
             const updatedServices = services.filter(s => s.id !== id);
@@ -84,7 +84,7 @@ const Services = () => {
 
     const handleRestoreService = async (id) => {
         try {
-            await fetch(`http://localhost:3000/api/services/${id}/restore`, {
+            await fetch(`/api/services/${id}/restore`, {
                 method: 'PATCH',
             });
             fetchServices(); // Refresh all lists

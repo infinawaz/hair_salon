@@ -10,7 +10,7 @@ const Staff = () => {
     }, []);
 
     const fetchStaff = async () => {
-        const res = await fetch('http://localhost:3000/api/staff');
+        const res = await fetch('/api/staff');
         const data = await res.json();
         setStaffList(data);
     };
@@ -19,7 +19,7 @@ const Staff = () => {
         e.preventDefault();
         if (!newStaff.name) return;
 
-        await fetch('http://localhost:3000/api/staff', {
+        await fetch('/api/staff', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newStaff)

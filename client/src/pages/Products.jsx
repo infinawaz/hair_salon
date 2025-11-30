@@ -10,7 +10,7 @@ const Products = () => {
     }, []);
 
     const fetchProducts = async () => {
-        const res = await fetch('http://localhost:3000/api/products');
+        const res = await fetch('/api/products');
         const data = await res.json();
         setProducts(data);
     };
@@ -19,7 +19,7 @@ const Products = () => {
         e.preventDefault();
         if (!newProduct.name || !newProduct.price) return;
 
-        await fetch('http://localhost:3000/api/products', {
+        await fetch('/api/products', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

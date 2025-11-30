@@ -15,7 +15,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
     }, []);
 
     const fetchStaff = async () => {
-        const res = await fetch('http://localhost:3000/api/staff');
+        const res = await fetch('/api/staff');
         const data = await res.json();
         setStaffList(data);
     };
@@ -27,7 +27,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
         }
         setErrors(prev => ({ ...prev, phone: null }));
 
-        const res = await fetch(`http://localhost:3000/api/customers/search?phone=${phone}`);
+        const res = await fetch(`/api/customers/search?phone=${phone}`);
         const data = await res.json();
         if (data) {
             setCustomer(data);
@@ -62,7 +62,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
 
             // Create customer if new
             if (!customer) {
-                const res = await fetch('http://localhost:3000/api/customers', {
+                const res = await fetch('/api/customers', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ...newCustomer, contactNo: phone })
@@ -77,7 +77,7 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
             if (!customerId) throw new Error('Invalid Customer ID');
 
             // Create Visit
-            const res = await fetch('http://localhost:3000/api/visits', {
+            const res = await fetch('/api/visits', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
