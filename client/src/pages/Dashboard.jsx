@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, Users, ShoppingBag, TrendingUp, Printer, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
+import { IndianRupee, Users, ShoppingBag, TrendingUp, Printer, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const Dashboard = () => {
@@ -285,7 +285,7 @@ const Dashboard = () => {
             <div className="grid-responsive" style={{ marginBottom: '2.5rem' }}>
                 {/* Stats Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignContent: 'start' }}>
-                    <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)} `} icon={DollarSign} />
+                    <StatCard title="Daily Sales" value={`₹${stats.dailySales.toFixed(2)} `} icon={IndianRupee} />
                     <StatCard title="Monthly Revenue" value={`₹${stats.monthlySales.toFixed(2)} `} icon={ShoppingBag} />
                     <StatCard title="Daily Orders" value={stats.dailyOrders} icon={Users} />
                     <StatCard title="Monthly Orders" value={stats.monthlyOrders} icon={CalendarIcon} />
