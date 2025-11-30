@@ -471,6 +471,18 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+
+  // Auto-create default admin if not exists
+  try {
+    const admin = await prisma.admin.upsert({
+      where: { username: 'admin' },
+      update: {},
+      create: { username: 'admin', password: 'password123' }
+    });
+    console.log('Admin user verified/created:', admin.username);
+  } catch (error) {
+    console.error('Failed to verify admin user:', error);
+  }
 });
