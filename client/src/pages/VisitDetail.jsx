@@ -26,7 +26,7 @@ const VisitDetail = () => {
     }, [id]);
 
     const fetchVisit = async () => {
-        const res = await fetch(`/api/visits/${id}`);
+        const res = await fetch(`/api/visits/${id}?t=${Date.now()}`);
         const data = await res.json();
         setVisit(data);
     };
