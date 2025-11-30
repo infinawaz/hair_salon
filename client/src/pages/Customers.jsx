@@ -84,7 +84,8 @@ const Customers = () => {
             <body>
                 <div class="header">
                     <div class="title">SALON CITY</div>
-                    <div>Delhi • +91 81301 03727</div>
+                    <div>J-138, Main Market, Rajori Garden, New Delhi-110027</div>
+                    <div>Contact: 9667722611</div>
                 </div>
                 <div class="info">
                     <div><strong>Date:</strong> ${new Date(visit.date).toLocaleString()}</div>

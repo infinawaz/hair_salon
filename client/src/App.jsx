@@ -40,7 +40,11 @@ const DashboardLayout = ({ theme, toggleTheme }) => {
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-title">Salon City</div>
-        <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>Delhi • +91 81301 03727</div>
+        <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
+          <p style={{ margin: 0 }}>J-138, Main Market, Rajori Garden</p>
+          <p style={{ margin: 0 }}>New Delhi-110027</p>
+          <p style={{ margin: '0.5rem 0 0 0' }}>Contact: 9667722611</p>
+        </div>
         <nav style={{ flex: 1 }}>
           {navItems.map((item) => (
             <Link
