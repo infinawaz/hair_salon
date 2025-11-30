@@ -13,6 +13,7 @@ const VisitDetail = () => {
     const [staffList, setStaffList] = useState([]);
     const [taxPercent, setTaxPercent] = useState(18);
     const [discountPercent, setDiscountPercent] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Modal states
     const [showAddService, setShowAddService] = useState(false);
@@ -105,14 +106,9 @@ const VisitDetail = () => {
                         <h2 className="card-title">Services & Products</h2>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             {visit.status !== 'COMPLETED' && (
-                                <>
-                                    <button className="btn btn-secondary" onClick={() => setShowAddProduct(true)}>
-                                        <Plus size={16} /> Product
-                                    </button>
-                                    <button className="btn btn-primary" onClick={() => setShowAddService(true)}>
-                                        <Plus size={16} /> Service
-                                    </button>
-                                </>
+                                <button className="btn btn-primary" onClick={() => setShowAddService(true)}>
+                                    <Plus size={16} /> Add Service
+                                </button>
                             )}
                         </div>
                     </div>
@@ -265,6 +261,10 @@ const VisitDetail = () => {
             </div>
 
             {/* Modals */}
+            const [searchTerm, setSearchTerm] = useState('');
+
+            // ... (inside render)
+
             {showAddService && (
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
                     <div className="card" style={{ width: '900px', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
@@ -273,13 +273,27 @@ const VisitDetail = () => {
                                 <h3 style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--primary)' }}>Select Service</h3>
                                 <p style={{ color: 'var(--muted-foreground)' }}>Choose a service to add to the visit</p>
                             </div>
-                            <button onClick={() => setShowAddService(false)} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}>
-                                <X size={24} />
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Search services..."
+                                    className="input"
+                                    style={{ width: '250px' }}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    autoFocus
+                                />
+                                <button onClick={() => setShowAddService(false)} style={{ background: 'none', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer' }}>
+                                    <X size={24} />
+                                </button>
+                            </div>
                         </div>
                         <div className="card-content" style={{ overflowY: 'auto', padding: '1.5rem' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
-                                {services.map(s => {
+                                {services.filter(s =>
+                                    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    s.category.toLowerCase().includes(searchTerm.toLowerCase())
+                                ).map(s => {
                                     // Gender-Aware Image Mapping
                                     const gender = visit?.customer?.gender || 'Female'; // Default to Female if unknown
                                     const isMale = gender === 'Male';
