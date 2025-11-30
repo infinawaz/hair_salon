@@ -247,8 +247,18 @@ app.post('/api/visits/:id/invoice', async (req, res) => {
   const tax = (taxable * taxRate) / 100;
   const total = taxable + tax;
 
-  const invoice = await prisma.invoice.create({
-    data: {
+  const invoice = await prisma.invoice.upsert({
+    where: { visitId },
+    update: {
+      subtotal,
+      discount,
+      tax,
+      total,
+      // Keep existing status if it exists, or maybe reset to PENDING? 
+      // If we are regenerating, it usually means we changed items, so PENDING/WAITING_PAYMENT is appropriate.
+      // But let's just update the amounts. The status update to WAITING_PAYMENT happens below anyway.
+    },
+    create: {
       visitId,
       subtotal,
       discount,
