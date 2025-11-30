@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "build": "cd ../client && npm install && npm run build && cd ../server && npx prisma generate",
+    "build": "./render-build.sh",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "seed": "node seed_services.js"
