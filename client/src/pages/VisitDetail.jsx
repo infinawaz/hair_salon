@@ -261,9 +261,7 @@ const VisitDetail = () => {
             </div>
 
             {/* Modals */}
-            const [searchTerm, setSearchTerm] = useState('');
 
-            // ... (inside render)
 
             {showAddService && (
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
