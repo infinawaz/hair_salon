@@ -28,6 +28,13 @@ const Staff = () => {
         fetchStaff();
     };
 
+    const handleDeleteStaff = async (id) => {
+        if (!confirm('Are you sure you want to delete this staff member?')) return;
+
+        await fetch(`/api/staff/${id}`, { method: 'DELETE' });
+        fetchStaff();
+    };
+
     return (
         <div>
             <div className="page-header">
@@ -46,6 +53,7 @@ const Staff = () => {
                                     <th>Name</th>
                                     <th>Role</th>
                                     <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,6 +70,15 @@ const Staff = () => {
                                             <span style={{ padding: '0.2rem 0.5rem', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', fontSize: '0.75rem' }}>
                                                 Active
                                             </span>
+                                        </td>
+                                        <td>
+                                            <button
+                                                onClick={() => handleDeleteStaff(staff.id)}
+                                                style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                                                title="Delete Staff"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

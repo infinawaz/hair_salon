@@ -42,6 +42,15 @@ app.post('/api/staff', async (req, res) => {
   res.json(staff);
 });
 
+app.delete('/api/staff/:id', async (req, res) => {
+  try {
+    await prisma.staff.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete staff' });
+  }
+});
+
 // --- PRODUCT MANAGEMENT ---
 app.get('/api/products', async (req, res) => {
   const products = await prisma.product.findMany();
