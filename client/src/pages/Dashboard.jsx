@@ -73,7 +73,7 @@ const Dashboard = () => {
                     width: '48px',
                     height: '48px',
                     borderRadius: '12px',
-                    background: 'rgba(248, 117, 170, 0.1)',
+                    background: 'rgba(212, 175, 55, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -85,7 +85,7 @@ const Dashboard = () => {
         </div>
     );
 
-    const COLORS = ['#F875AA', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
+    const COLORS = ['#d4af37', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
 
     const [selectedBill, setSelectedBill] = useState(null);
 
@@ -208,8 +208,8 @@ const Dashboard = () => {
                         justifyContent: 'center',
                         borderRadius: '0.5rem',
                         cursor: 'pointer',
-                        background: isSelected ? 'var(--primary)' : isToday ? 'rgba(248, 117, 170, 0.2)' : 'transparent',
-                        color: isSelected ? 'white' : 'var(--foreground)',
+                        background: isSelected ? 'var(--primary)' : isToday ? 'rgba(212, 175, 55, 0.2)' : 'transparent',
+                        color: isSelected ? 'black' : 'var(--foreground)',
                         fontWeight: isSelected || isToday ? 'bold' : 'normal',
                         border: isToday && !isSelected ? '1px solid var(--primary)' : 'none'
                     }}
@@ -253,12 +253,12 @@ const Dashboard = () => {
                 marginBottom: '2.5rem',
                 padding: '2rem',
                 borderRadius: 'var(--radius)',
-                background: 'linear-gradient(135deg, var(--primary) 0%, #fbcfe8 100%)',
+                background: 'linear-gradient(135deg, #d4af37 0%, #b45309 100%)',
                 color: 'white',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                boxShadow: '0 10px 30px rgba(248, 117, 170, 0.2)'
+                boxShadow: '0 10px 30px rgba(212, 175, 55, 0.2)'
             }}>
                 <div>
                     <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back!</h1>

@@ -160,12 +160,12 @@ const Customers = () => {
                                             width: '40px',
                                             height: '40px',
                                             borderRadius: '50%',
-                                            background: 'linear-gradient(135deg, var(--primary) 0%, #fbcfe8 100%)',
+                                            background: 'linear-gradient(135deg, #d4af37 0%, #b45309 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             color: '#fff',
-                                            boxShadow: '0 4px 10px rgba(248, 117, 170, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
                                         }}>
                                             <User size={20} />
                                         </div>

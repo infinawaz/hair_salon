@@ -165,8 +165,8 @@ const Billing = () => {
             </div>
 
             {/* Bill Details */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', border: '1px solid var(--border)' }}>
-                <div className="card-header" style={{ background: 'rgba(248, 117, 170, 0.05)' }}>
+            <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+                <div className="card-header" style={{ background: 'rgba(212, 175, 55, 0.05)' }}>
                     <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Receipt size={20} /> Current Bill
                     </h2>
