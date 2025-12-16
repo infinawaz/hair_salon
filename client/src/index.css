@@ -216,6 +216,9 @@ body {
 
 .sidebar {
   width: 280px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   background: var(--sidebar-bg);
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--glass-border);
@@ -224,6 +227,7 @@ body {
   display: flex;
   flex-direction: column;
   transition: background 0.3s ease;
+  overflow: hidden;
 }
 
 .sidebar-title {
@@ -267,6 +271,7 @@ body {
   flex: 1;
   padding: 2.5rem;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .page-header {
