@@ -136,12 +136,13 @@ const Reception = () => {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', flex: 1, overflow: 'hidden' }}>
                 {columns.map(col => (
-                    <div key={col.id} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <div key={col.id} style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
                         <div style={{
                             display: 'flex', alignItems: 'center', gap: '0.5rem',
                             marginBottom: '1rem', padding: '0.75rem',
                             background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius)',
-                            borderBottom: `2px solid ${col.color}`
+                            borderBottom: `2px solid ${col.color}`,
+                            flexShrink: 0
                         }}>
                             <col.icon size={18} color={col.color} />
                             <span style={{ fontWeight: '600' }}>{col.title}</span>
@@ -156,7 +157,7 @@ const Reception = () => {
                             </span>
                         </div>
 
-                        <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.5rem' }}>
+                        <div style={{ flex: 1, overflowY: 'auto', paddingRight: '0.5rem', minHeight: 0 }}>
                             {visits.filter(v => v.status === col.id).map(visit => (
                                 <VisitCard key={visit.id} visit={visit} />
                             ))}
