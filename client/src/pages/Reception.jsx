@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Clock, Scissors, CreditCard, CheckCircle, User } from 'lucide-react';
+import { Plus, Clock, Scissors, CreditCard, CheckCircle, User, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CheckInModal from '../components/CheckInModal';
 
@@ -37,6 +37,19 @@ const Reception = () => {
         }
     };
 
+    const deleteVisit = async (id) => {
+        if (!window.confirm('Are you sure you want to remove this customer from the queue?')) return;
+
+        try {
+            await fetch(`/api/visits/${id}`, {
+                method: 'DELETE',
+            });
+            fetchVisits();
+        } catch (error) {
+            console.error('Error deleting visit:', error);
+        }
+    };
+
     const columns = [
         { id: 'CHECKED_IN', title: 'Waiting', icon: Clock, color: '#f59e0b' },
         { id: 'IN_SERVICE', title: 'In Service', icon: Scissors, color: '#3b82f6' },
@@ -50,11 +63,35 @@ const Reception = () => {
             onClick={() => navigate(`/visits/${visit.id}`)}
         >
             <div className="card-content" style={{ padding: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                     <span style={{ fontWeight: '600' }}>{visit.customer.name}</span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
-                        {new Date(visit.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                            {new Date(visit.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                deleteVisit(visit.id);
+                            }}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: 'var(--muted-foreground)',
+                                padding: '0.25rem',
+                                borderRadius: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'none'; }}
+                            title="Remove from queue"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    </div>
                 </div>
 
                 <div style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

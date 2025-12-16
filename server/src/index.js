@@ -208,6 +208,31 @@ app.get('/api/visits/:id', async (req, res) => {
   res.json(visit);
 });
 
+// 3.1 Delete Visit (Remove from queue)
+app.delete('/api/visits/:id', async (req, res) => {
+  const visitId = parseInt(req.params.id);
+  try {
+    // First, delete related records due to foreign key constraints
+    await prisma.visitItem.deleteMany({ where: { visitId } });
+    await prisma.feedback.deleteMany({ where: { visitId } });
+
+    // Delete invoice and its payments if exists
+    const invoice = await prisma.invoice.findUnique({ where: { visitId } });
+    if (invoice) {
+      await prisma.payment.deleteMany({ where: { invoiceId: invoice.id } });
+      await prisma.invoice.delete({ where: { visitId } });
+    }
+
+    // Finally, delete the visit
+    await prisma.visit.delete({ where: { id: visitId } });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete Visit Error:', error);
+    res.status(500).json({ error: 'Failed to delete visit' });
+  }
+});
+
 // 3.5 Update Visit Status (Manual)
 app.patch('/api/visits/:id/status', async (req, res) => {
   const { status } = req.body;
