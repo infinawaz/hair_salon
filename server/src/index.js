@@ -151,7 +151,17 @@ app.get('/api/customers', async (req, res) => {
     },
     orderBy: { createdAt: 'desc' }
   });
-  res.json(customers);
+
+  // Compute customer type based on completed visits
+  const customersWithType = customers.map(customer => {
+    const completedVisits = customer.visits.filter(v => v.status === 'COMPLETED').length;
+    return {
+      ...customer,
+      type: completedVisits > 0 ? 'Old' : 'New'
+    };
+  });
+
+  res.json(customersWithType);
 });
 
 app.delete('/api/customers/:id', async (req, res) => {
