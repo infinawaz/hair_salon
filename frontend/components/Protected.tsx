@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import React, { useEffect, PropsWithChildren } from 'react'
 import { useAuthStore } from '../stores/authStore'
 
-export default function Protected({ children }: { children: React.ReactNode }) {
+export default function Protected({ children }: PropsWithChildren<{}>) {
   const router = useRouter()
   const token = useAuthStore((s) => s.token)
 
