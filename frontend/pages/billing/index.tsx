@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '../../components/Layout'
 import api from '../../lib/api'
-import Link from 'next/link'
 import Protected from '../../components/Protected'
+import Modal from '../../components/Modal'
 
 type Bill = {
   id: number
@@ -12,10 +12,28 @@ type Bill = {
 
 export default function BillingPage() {
   const [bills, setBills] = useState<Bill[]>([])
+  const [selectedBillId, setSelectedBillId] = useState<number | null>(null)
+  const [invoiceHtml, setInvoiceHtml] = useState<string | null>(null)
 
   useEffect(() => {
     api.get('/bills/').then((res) => setBills(res.data))
   }, [])
+
+  const handleOpenInvoice = async (id: number) => {
+    setSelectedBillId(id)
+    try {
+      const res = await api.get(`/bills/${id}/invoice/`)
+      setInvoiceHtml(res.data.html)
+    } catch (err) {
+      console.error(err)
+      setInvoiceHtml('<p>Failed to load invoice.</p>')
+    }
+  }
+
+  const handleCloseModal = () => {
+    setSelectedBillId(null)
+    setInvoiceHtml(null)
+  }
 
   return (
     <Protected>
@@ -34,8 +52,15 @@ export default function BillingPage() {
             </thead>
             <tbody>
               {bills.map((b) => (
-                <tr key={b.id} className="border-t">
-                  <td className="p-3"><Link href={`/billing/${b.id}`}><a>#{b.id}</a></Link></td>
+                <tr key={b.id} className="border-t hover:bg-gray-50">
+                  <td className="p-3">
+                    <button
+                      onClick={() => handleOpenInvoice(b.id)}
+                      className="text-blue-600 hover:underline font-bold"
+                    >
+                      #{b.id}
+                    </button>
+                  </td>
                   <td className="p-3">{b.customer}</td>
                   <td className="p-3">{b.total}</td>
                 </tr>
@@ -43,6 +68,18 @@ export default function BillingPage() {
             </tbody>
           </table>
         </div>
+
+        <Modal
+          isOpen={!!selectedBillId}
+          onClose={handleCloseModal}
+          title={`Invoice #${selectedBillId}`}
+        >
+          {invoiceHtml ? (
+            <div dangerouslySetInnerHTML={{ __html: invoiceHtml }} />
+          ) : (
+            <div className="flex justify-center p-4">Loading invoice...</div>
+          )}
+        </Modal>
       </Layout>
     </Protected>
   )
