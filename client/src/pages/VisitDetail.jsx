@@ -11,7 +11,7 @@ const VisitDetail = () => {
     const [services, setServices] = useState([]);
     const [products, setProducts] = useState([]);
     const [staffList, setStaffList] = useState([]);
-    const [taxPercent, setTaxPercent] = useState(18);
+    const [taxPercent, setTaxPercent] = useState(0);
     const [discountPercent, setDiscountPercent] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
 
