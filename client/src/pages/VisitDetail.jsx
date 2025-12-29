@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { User, Calendar, Plus, Trash2, Printer, ArrowLeft, ShoppingBag, Scissors, CheckCircle, Star } from 'lucide-react';
 import PaymentModal from '../components/PaymentModal';
 import FeedbackModal from '../components/FeedbackModal';
+import InvoiceModal from '../components/InvoiceModal';
 
 const VisitDetail = () => {
     const { id } = useParams(); // Trigger HMR update
@@ -20,6 +21,7 @@ const VisitDetail = () => {
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [showPayment, setShowPayment] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
+    const [showInvoice, setShowInvoice] = useState(false);
 
     useEffect(() => {
         fetchVisit();
@@ -64,12 +66,16 @@ const VisitDetail = () => {
         const subtotal = visit.items.reduce((sum, i) => sum + i.price, 0);
         const discountAmount = (subtotal * discountPercent) / 100;
 
-        await fetch(`/api/visits/${id}/invoice`, {
+        const res = await fetch(`/api/visits/${id}/invoice`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ discount: discountAmount, taxRate: taxPercent })
         });
-        fetchVisit();
+
+        if (res.ok) {
+            await fetchVisit();
+            setShowInvoice(true);
+        }
     };
 
     if (!visit) return <div>Loading...</div>;
@@ -403,6 +409,21 @@ const VisitDetail = () => {
                         visitId={visit.id}
                         onClose={() => setShowFeedback(false)}
                         onSubmit={fetchVisit}
+                    />
+                )
+            }
+
+            {
+                showInvoice && visit.invoice && (
+                    <InvoiceModal
+                        invoice={visit.invoice}
+                        customer={visit.customer}
+                        items={visit.items}
+                        onClose={() => setShowInvoice(false)}
+                        onProceedToPayment={() => {
+                            setShowInvoice(false);
+                            setShowPayment(true);
+                        }}
                     />
                 )
             }
