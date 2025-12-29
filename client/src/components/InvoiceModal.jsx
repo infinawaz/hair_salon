@@ -8,8 +8,78 @@ const InvoiceModal = ({ invoice, customer, items, onClose, onProceedToPayment })
     };
 
     return (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div className="card" style={{ width: '500px', maxHeight: '90vh', overflow: 'auto' }}>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+            {/* Print-friendly Invoice - Hidden on screen, visible when printing */}
+            <div className="print-invoice" style={{ display: 'none' }}>
+                <div className="invoice-header">
+                    <div className="salon-name">Salon City</div>
+                    <div className="salon-address">
+                        J-138, Main Market, Rajori Garden<br />
+                        New Delhi-110027<br />
+                        Contact: 9667722611
+                    </div>
+                    <div className="invoice-title">TAX INVOICE</div>
+                    <div className="invoice-details">
+                        Invoice #: {invoice.id}<br />
+                        Date: {new Date(invoice.createdAt).toLocaleString()}
+                    </div>
+                </div>
+
+                <div className="customer-section">
+                    <strong>Bill To:</strong><br />
+                    {customer?.name || 'Walk-in Customer'}<br />
+                    {customer?.contactNo && `Phone: ${customer.contactNo}`}
+                </div>
+
+                <table className="items-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Type</th>
+                            <th className="price-col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items?.map(item => (
+                            <tr key={item.id}>
+                                <td>{item.service?.name || item.product?.name}</td>
+                                <td>{item.type}</td>
+                                <td className="price-col">₹{item.price.toFixed(2)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                <div className="totals-section">
+                    <div className="total-row">
+                        <span>Subtotal:</span>
+                        <span>₹{subtotal.toFixed(2)}</span>
+                    </div>
+                    {invoice.discount > 0 && (
+                        <div className="total-row">
+                            <span>Discount:</span>
+                            <span>-₹{invoice.discount.toFixed(2)}</span>
+                        </div>
+                    )}
+                    <div className="total-row">
+                        <span>Tax ({invoice.taxRate}%):</span>
+                        <span>₹{invoice.tax.toFixed(2)}</span>
+                    </div>
+                    <div className="total-row grand-total">
+                        <span>TOTAL:</span>
+                        <span>₹{invoice.total.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <div className="footer">
+                    <div className="thank-you">Thank You for Visiting!</div>
+                    <div>We appreciate your business.</div>
+                    <div style={{ marginTop: '10px' }}>--- End of Invoice ---</div>
+                </div>
+            </div>
+
+            {/* Screen UI Modal */}
+            <div className="card no-print" style={{ width: '500px', maxHeight: '90vh', overflow: 'auto' }}>
                 <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--glass-border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black' }}>
