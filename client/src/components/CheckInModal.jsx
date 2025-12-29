@@ -121,9 +121,13 @@ const CheckInModal = ({ onClose, onCheckIn }) => {
                                 type="text"
                                 className="input"
                                 value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                    setPhone(value);
+                                }}
                                 onBlur={handleSearch}
                                 placeholder="Enter 10-digit number"
+                                maxLength={10}
                             />
                             <Search size={18} style={{ position: 'absolute', right: '1rem', top: '0.75rem', color: 'var(--muted-foreground)' }} />
                         </div>
