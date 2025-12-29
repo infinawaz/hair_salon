@@ -21,6 +21,6 @@ echo "Debug: Listing .bin directory..."
 ls -la node_modules/.bin
 
 echo "Generating Prisma client..."
-npm run prisma:generate
+npx prisma generate
 
 echo "Build done!"
