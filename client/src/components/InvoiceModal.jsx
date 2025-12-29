@@ -10,7 +10,7 @@ const InvoiceModal = ({ invoice, customer, items, onClose, onProceedToPayment })
     return (
         <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
             {/* Print-friendly Invoice - Hidden on screen, visible when printing */}
-            <div className="print-invoice" style={{ display: 'none' }}>
+            <div className="print-invoice screen-hidden">
                 <div className="invoice-header">
                     <div className="salon-name">Salon City</div>
                     <div className="salon-address">

@@ -418,6 +418,11 @@ select.input option {
 }
 
 /* Print Styles for Invoice */
+/* Hide print-invoice on screen */
+.screen-hidden {
+  display: none;
+}
+
 @media print {
 
   /* Hide everything except the invoice */
@@ -431,6 +436,7 @@ select.input option {
   }
 
   .print-invoice {
+    display: block !important;
     position: absolute;
     left: 0;
     top: 0;
