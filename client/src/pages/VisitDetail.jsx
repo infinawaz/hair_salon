@@ -232,10 +232,10 @@ const VisitDetail = () => {
                                 <button
                                     className="btn btn-primary"
                                     style={{ width: '100%', backgroundColor: '#10b981', borderColor: '#10b981' }}
-                                    onClick={() => setShowPayment(true)}
+                                    onClick={() => setShowInvoice(true)}
                                 >
                                     <CheckCircle size={18} style={{ marginRight: '0.5rem' }} />
-                                    Collect Payment
+                                    View Invoice & Pay
                                 </button>
                             )}
 
